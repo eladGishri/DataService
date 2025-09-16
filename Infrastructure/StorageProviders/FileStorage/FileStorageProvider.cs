@@ -6,12 +6,25 @@ using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.StorageProviders.FileStorage
 {
+    /// <summary>
+    /// Provides a file-based implementation of <see cref="IStorageProvider"/> and <see cref="IFileProvider"/>
+    /// for performing CRUD operations on <see cref="DataEntity"/> objects.
+    /// </summary>
     public class FileStorageProvider : IStorageProvider, IFileProvider
     {
+        /// <summary>
+        /// Gets the type of storage used by this provider.
+        /// </summary>
         public StorageType Type => StorageType.File;
+
         private const int _fileExpirationMinutes = 30;
         private readonly string _storageDirectory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileStorageProvider"/> class using configuration settings.
+        /// </summary>
+        /// <param name="configuration">The application configuration containing file storage settings.</param>
+        /// <exception cref="Exception">Thrown when initialization fails.</exception>
         public FileStorageProvider(IConfiguration configuration)
         {
             try
@@ -31,6 +44,14 @@ namespace Infrastructure.StorageProviders.FileStorage
             }
         }
 
+        /// <summary>
+        /// Constructs the file path for a given entity ID and optional expiration timestamp.
+        /// </summary>
+        /// <param name="id">The unique identifier of the entity.</param>
+        /// <param name="expiration">Optional expiration timestamp.</param>
+        /// <returns>The full file path.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="id"/> is null or whitespace.</exception>
+        /// <exception cref="Exception">Thrown when file path resolution fails.</exception>
         private string GetFilePath(string id, DateTime? expiration = null)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -54,6 +75,13 @@ namespace Infrastructure.StorageProviders.FileStorage
             }
         }
 
+        /// <summary>
+        /// Asynchronously retrieves a <see cref="DataEntity"/> from file storage by its ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the entity.</param>
+        /// <returns>The retrieved <see cref="DataEntity"/>, or <c>null</c> if not found or expired.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="id"/> is null or whitespace.</exception>
+        /// <exception cref="Exception">Thrown when retrieval fails.</exception>
         public async Task<DataEntity> GetAsync(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -85,10 +113,18 @@ namespace Infrastructure.StorageProviders.FileStorage
             }
         }
 
+        /// <summary>
+        /// Asynchronously saves a <see cref="DataEntity"/> to file storage.
+        /// </summary>
+        /// <param name="item">The entity to save.</param>
+        /// <returns><c>true</c> if the save was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="item"/> is null or has an empty ID.</exception>
+        /// <exception cref="Exception">Thrown when the save operation fails.</exception>
         public async Task<bool> SaveAsync(DataEntity item)
         {
             if (item == null || string.IsNullOrWhiteSpace(item.Id))
                 throw new ArgumentNullException(nameof(item));
+
             try
             {
                 var oldFile = GetFilePath(item.Id);
@@ -109,6 +145,12 @@ namespace Infrastructure.StorageProviders.FileStorage
             }
         }
 
+        /// <summary>
+        /// Asynchronously updates an existing <see cref="DataEntity"/> in file storage.
+        /// </summary>
+        /// <param name="item">The entity with updated values.</param>
+        /// <returns><c>true</c> if the update was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="item"/> is null or has an empty ID.</exception>
         public Task<bool> UpdateAsync(DataEntity item)
         {
             if (item == null || string.IsNullOrWhiteSpace(item.Id))
@@ -117,6 +159,13 @@ namespace Infrastructure.StorageProviders.FileStorage
             return SaveAsync(item);
         }
 
+        /// <summary>
+        /// Asynchronously deletes a <see cref="DataEntity"/> from file storage by its ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the entity to delete.</param>
+        /// <returns><c>true</c> if the deletion was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="id"/> is null or whitespace.</exception>
+        /// <exception cref="Exception">Thrown when the delete operation fails.</exception>
         public Task<bool> DeleteAsync(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
