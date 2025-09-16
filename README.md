@@ -1,15 +1,19 @@
 # DataService
-A .NET Web API that provides a data retrieval service while using caching, file storage, and a database.  
-The service follows a layered architecture with good design patterns, security mechanisms, and role-based authorization.
+A **.NET 8 Web API** that provides a data retrieval service with **caching, file storage, and database support**.  
+The service follows a **layered architecture**, implements **repository, service, and factory design patterns**, and uses **JWT authentication with role-based authorization** for secure access.  
+
+> 🚀 **Purpose**: DataService is designed to abstract and unify data access across multiple storage mechanisms—cache, file system, and database—while enforcing secure, role-based operations. It provides a scalable and extensible foundation for enterprise-grade APIs.
 
 ## Features
-- **Layered architecture**: Separation of concerns between controllers, services, infrastructure, and DTOs.  
+- **Layered architecture**: Separation of concerns between controllers, services, infrastructure, and DTOs.
+- Service layer abstraction for business logic.
+- **Factory Design Pattern**: The storage provider is selected dynamically using a factory.
+- **Repository design pattern** for data access.
+- Data is stored via multiple storage providers: cache, file system, and database.
 - **JWT Authentication & Authorization**: Secure endpoints with role-based access (Admin/User).  
-- **Storage abstraction**: Data can be stored in Cache, File Storage, or Database.  
-- **Factory Design Pattern**: The storage provider is selected dynamically using a factory.  
-- **Entity Framework Core**: Database persistence with SQL Server.  
+- **Entity Framework Core**: Database persistence with SQL Server.
+- AutoMapper for DTO ↔ Entity mapping.
 - **Swagger UI**: Interactive API documentation with JWT support.  
-- **Caching**: Speeds up data retrieval.  
 
 ## Project Structure
 ```
@@ -18,6 +22,11 @@ DataService.Application/     # Application services, DTOs, mapping
 DataService.Infrastructure/  # EF Core, repositories, storage providers
 DataService.Models/          # Domain entities
 ```
+
+## Notes
+- The project can be run via Visual Studio or by executing the built .exe.
+- Development HTTPS certificate may need to be trusted (see Postman settings).
+- All test scenarios are reproducible using the included Postman collection.
 
 ## Setup
 
@@ -67,18 +76,12 @@ Authorization: Bearer <JWT_TOKEN>
 
 ## Postman Testing
 
-A **Postman collection** and environment file are included in the repository (`/postman`).  
+A **Postman collection** and environment files are included in the repository (`/postman`).  
 
 - Import them into Postman.  
 - Login first to retrieve the JWT.  
-- Environment variables (`{{baseUrl}}`, `{{token}}`) are already set up.  
+- Environment variables are already set up.  
 - You can **run the entire collection** to automatically test authentication, data insert, retrieval, and update.  
-
-## Design Patterns Used
-
-- **Factory Pattern**: Used to select the correct storage provider (`CacheStorageProvider`, `FileStorageProvider`, `DatabaseStorageProvider`).  
-- **Repository Pattern**: Abstracts database access.  
-- **DTOs and AutoMapper**: Decouple entities from API contracts.  
 
 ## Security
 
