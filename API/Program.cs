@@ -88,11 +88,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("User", policy => policy.RequireRole("User"));
 });
 
-builder.Logging.AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    builder.Logging.AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
