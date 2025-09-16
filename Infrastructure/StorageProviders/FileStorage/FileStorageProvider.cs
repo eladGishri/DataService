@@ -70,7 +70,7 @@ namespace Infrastructure.StorageProviders.FileStorage
                 if (parts.Length != 2 || !DateTime.TryParseExact(parts[1], "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out var expiration))
                     return null;
 
-                if (DateTime.UtcNow > expiration)
+                if (DateTime.Now > expiration)
                 {
                     File.Delete(filePath);
                     return null;
@@ -97,7 +97,7 @@ namespace Infrastructure.StorageProviders.FileStorage
                     File.Delete(oldFile);
                 }
 
-                var expiration = DateTime.UtcNow.AddMinutes(_fileExpirationMinutes);
+                var expiration = DateTime.Now.AddMinutes(_fileExpirationMinutes);
                 var filePath = GetFilePath(item.Id, expiration);
                 var json = JsonSerializer.Serialize(item);
                 await File.WriteAllTextAsync(filePath, json);

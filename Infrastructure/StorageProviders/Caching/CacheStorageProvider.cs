@@ -42,7 +42,7 @@ public class CacheStorageProvider : IStorageProvider, ICacheProvider
         {
             var policy = new CacheItemPolicy
             {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(_cacheExpirationMinutes)
+                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(_cacheExpirationMinutes)
             };
             _cache.Set(item.Id, item, policy);
             return Task.FromResult(true);

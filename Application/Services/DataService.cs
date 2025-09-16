@@ -74,7 +74,7 @@ namespace DataService.Application.Services
                 }
 
                 searchResult.Entity.Value = data;
-                searchResult.Entity.CreatedAt = DateTime.UtcNow;
+                searchResult.Entity.CreatedAt = DateTime.Now;
                 searchResult.FoundIn = null;    // Has to be updated in all providers
 
                 if (!await UpdateDataInProvidersAsync(searchResult.Entity, new List<IStorageProvider>
@@ -316,7 +316,7 @@ namespace DataService.Application.Services
             {
                 Id = Guid.NewGuid().ToString(),
                 Value = data,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
         }
 

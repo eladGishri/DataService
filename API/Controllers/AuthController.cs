@@ -37,7 +37,7 @@ namespace DataService.Api.Controllers
                 issuer: "DataServiceApi",
                 audience: "DataServiceApi",
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
