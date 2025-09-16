@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "305e904b-30a7-408f-9824-e39ecff7e1af",
+		"name": "DataServiceApi_Postman_collection",
+		"description": "Postman collection for testing DataService System (.NET 8 API with JWT + Role-Based Authorization) using HTTP for local testing)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "22473796"
+	},
+	"item": [
+		{
+			"name": "Login as Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const json = pm.response.json();",
+							"pm.environment.set(\"jwtToken\", json.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+				},
+				"url": "http://localhost:5296/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login as User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const json = pm.response.json();",
+							"pm.environment.set(\"jwtTokenUser\", json.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user\",\n    \"password\": \"user123\"\n}"
+				},
+				"url": "http://localhost:5296/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "POST Data (Admin inserts)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Data ID returned\", function () {",
+							"    const id = pm.response.text();",
+							"    pm.environment.set(\"dataId\", id);",
+							"    pm.expect(id).to.be.a('string');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Sample data content\""
+				},
+				"url": "http://localhost:5296/data"
+			},
+			"response": []
+		},
+		{
+			"name": "GET Data by ID (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contains data\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}"
+					}
+				],
+				"url": "http://localhost:5296/data/{{dataId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Data (Admin updates)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Updated data content\""
+				},
+				"url": "http://localhost:5296/data/{{dataId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "GET Data by ID (User)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contains data\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.exist;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtTokenUser}}"
+					}
+				],
+				"url": "http://localhost:5296/data/{{dataId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "POST Data (User should fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403 Forbidden\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtTokenUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Trying to insert as User\""
+				},
+				"url": "http://localhost:5296/data"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Data (User should fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403 Forbidden\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtTokenUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Trying to update as User\""
+				},
+				"url": "http://localhost:5296/data/{{dataId}}"
+			},
+			"response": []
+		}
+	]
+}
