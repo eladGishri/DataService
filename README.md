@@ -1,6 +1,6 @@
 # DataService  
 A **.NET 8 Web API** that provides a data retrieval service with **caching, file storage, and database support**.  
-The service follows a **layered architecture**, implements **repository, service, and factory design patterns**, and uses **JWT authentication with role-based authorization** for secure access.  
+The service follows a **layered architecture**, implements **repository and factory design patterns**, and uses **JWT authentication with role-based authorization** for secure access.  
 
 ---
 
