@@ -1,189 +1,94 @@
-# DataService  
-A **.NET 8 Web API** that provides a data retrieval service with **caching, file storage, and database support**.  
-The service follows a **layered architecture**, implements **repository, service, and factory design patterns**, and uses **JWT authentication with role-based authorization** for secure access.  
-
----
+# DataService
+A .NET Web API that provides a data retrieval service while using caching, file storage, and a database.  
+The service follows a layered architecture with good design patterns, security mechanisms, and role-based authorization.
 
 ## Features
-- 🔐 **Authentication & Authorization**  
-  - JWT-based authentication.  
-  - Role-based authorization (`Admin`, `User`).  
-
-- 📦 **Data Management**  
-  - `User` can fetch data by ID.  
-  - `Admin` can insert and update data.  
-  - Data is stored via multiple storage providers: cache, file system, and database.  
-
-- ⚡ **Architecture & Design Patterns**  
-  - Repository pattern for data access.  
-  - Service layer abstraction for business logic.  
-  - **Factory Design Pattern** for selecting a storage provider dynamically (`Cache`, `FileStorage`, `Database`).  
-  - AutoMapper for DTO ↔ Entity mapping.  
-
-- 🛡️ **Security**  
-  - HTTPS support (dev cert).  
-  - JWT token validation (issuer, audience, signing key).  
-
-- 📖 **API Documentation**  
-  - Integrated **Swagger UI** (`/swagger`) in development.  
-
----
-
-## Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
-- SQL Server (or LocalDB)  
-- [Postman](https://www.postman.com/downloads/) for testing  
-
----
-
-## Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/dataservice.git
-   cd dataservice
-   ```
-
-2. Update **connection string** in `appsettings.json`:
-   ```json
-   "ConnectionStrings": {
-     "DbConnectionString": "Server=(localdb)\\mssqllocaldb;Database=DataServiceDb;Trusted_Connection=True;"
-   }
-   ```
-
-3. Run the project:
-   ```bash
-   dotnet run --project DataService.Api
-   ```
-
-4. Access the API:
-   - Swagger UI: [http://localhost:5296/swagger](http://localhost:5296/swagger)  
-   - HTTPS endpoint: [https://localhost:7252](https://localhost:7252)  
-
----
-
-## Authentication & Roles
-### Login (Get JWT Token)
-**Request**
-```http
-POST /auth/login
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin123"
-}
-```
-
-**Response**
-```json
-{
-  "token": "<jwt-token-here>"
-}
-```
-
-### Usage
-Include the token in the **Authorization** header for all protected requests:
-```
-Authorization: Bearer <jwt-token-here>
-```
-
-### Roles
-- **User**
-  - Can fetch data: `GET /data/{id}`  
-- **Admin**
-  - Can insert data: `POST /data`  
-  - Can update data: `PUT /data/{id}`  
-  - Can also fetch data  
-
----
-
-## Example API Calls
-
-### Insert Data (Admin only)
-**Request**
-```http
-POST /data
-Authorization: Bearer <admin-token>
-Content-Type: application/json
-
-"Sample data content"
-```
-
-**Response**
-```http
-201 Created
-"4d7d7c6e-b8c3-4b9c-85e1-6b354e9b6c33"
-```
-
----
-
-### Fetch Data (User or Admin)
-**Request**
-```http
-GET /data/4d7d7c6e-b8c3-4b9c-85e1-6b354e9b6c33
-Authorization: Bearer <user-token>
-```
-
-**Response**
-```json
-{
-  "id": "4d7d7c6e-b8c3-4b9c-85e1-6b354e9b6c33",
-  "value": "Sample data content"
-}
-```
-
----
-
-### Update Data (Admin only)
-**Request**
-```http
-PUT /data/4d7d7c6e-b8c3-4b9c-85e1-6b354e9b6c33
-Authorization: Bearer <admin-token>
-Content-Type: application/json
-
-"Updated data content"
-```
-
-**Response**
-```http
-204 No Content
-```
-
----
-
-## Postman Testing
-A **Postman collection** and environment are provided in the `postman/` folder.  
-
-### Import into Postman
-1. Import `postman/DataService.postman_collection.json`.  
-2. Import `postman/DataService.postman_environment.json`.  
-3. Select the environment in Postman.  
-4. Run the following flow:
-   1. `POST /auth/login` as **Admin** → store token.  
-   2. `POST /data` (Admin only) → insert data, get ID.  
-   3. `GET /data/{id}` as **User** → fetch inserted data.  
-   4. `PUT /data/{id}` as **Admin** → update data.  
-
-👉 Alternatively, you can simply **run the entire Postman collection** to execute all steps automatically in sequence (acts as an automated test).  
-
----
+- **Layered architecture**: Separation of concerns between controllers, services, infrastructure, and DTOs.  
+- **JWT Authentication & Authorization**: Secure endpoints with role-based access (Admin/User).  
+- **Storage abstraction**: Data can be stored in Cache, File Storage, or Database.  
+- **Factory Design Pattern**: The storage provider is selected dynamically using a factory.  
+- **Entity Framework Core**: Database persistence with SQL Server.  
+- **Swagger UI**: Interactive API documentation with JWT support.  
+- **Caching**: Speeds up data retrieval.  
 
 ## Project Structure
 ```
-DataService/
-│
-├── DataService.Api/               # API project (controllers, middleware)
-├── DataService.Application/       # Application layer (services, DTOs, mappings)
-├── DataService.Infrastructure/    # Infrastructure (repositories, storage providers, factory)
-├── DataService.Models/            # Domain entities
-├── postman/                       # Postman collection & environment JSONs
-└── README.md
+DataService.Api/             # Web API project (controllers, startup, etc.)
+DataService.Application/     # Application services, DTOs, mapping
+DataService.Infrastructure/  # EF Core, repositories, storage providers
+DataService.Models/          # Domain entities
 ```
 
----
+## Setup
 
-## Examiner Notes
-- The project can be run via **Visual Studio** or by executing the built `.exe`.  
-- Development HTTPS certificate may need to be trusted (see Postman settings).  
-- All test scenarios are reproducible using the included Postman collection.  
-- The **Factory Design Pattern** is implemented in the `StorageProviderFactory` to dynamically select between **Cache**, **File Storage**, and **Database** providers.
+1. Clone the repository and open the solution in Visual Studio or JetBrains Rider.
+2. Update the database connection string in **appsettings.json** under `"ConnectionStrings": { "DbConnectionString": "..." }`.
+3. Configure the file storage base directory in **appsettings.json**:
+   ```json
+   "FileStorage": {
+     "BaseDirectory": "C:\\Temp\\DataServiceFileStorage"
+   }
+   ```
+   > ⚠️ You must change `BaseDirectory` to a folder that exists on your local machine.
+4. Build the solution (`dotnet build`).
+5. Run the application (`dotnet run` or launch from Visual Studio).
+6. Open Swagger UI at `http://localhost:<port>/swagger`.
+
+## Authentication & Authorization
+
+The API uses **JWT authentication**:  
+
+- **Login endpoint**: `POST /auth/login`  
+  - Example request body:  
+    ```json
+    {
+      "username": "admin",
+      "password": "admin123"
+    }
+    ```
+  - Response: `{ "token": "<JWT_TOKEN>" }`
+
+- **Roles**:
+  - `Admin`: Can insert and update data (`POST /data`, `PUT /data/{id}`)
+  - `User`: Can only fetch data (`GET /data/{id}`)
+
+Add the token to Postman or Swagger:  
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+## Example Workflow
+
+1. Login as **Admin** → Get JWT token  
+2. Use token to `POST /data` (insert new record)  
+3. Copy the generated GUID id  
+4. `GET /data/{id}` with Admin or User role  
+5. Update record with `PUT /data/{id}` (Admin only)  
+
+## Postman Testing
+
+A **Postman collection** and environment file are included in the repository (`/postman`).  
+
+- Import them into Postman.  
+- Login first to retrieve the JWT.  
+- Environment variables (`{{baseUrl}}`, `{{token}}`) are already set up.  
+- You can **run the entire collection** to automatically test authentication, data insert, retrieval, and update.  
+
+## Design Patterns Used
+
+- **Factory Pattern**: Used to select the correct storage provider (`CacheStorageProvider`, `FileStorageProvider`, `DatabaseStorageProvider`).  
+- **Repository Pattern**: Abstracts database access.  
+- **DTOs and AutoMapper**: Decouple entities from API contracts.  
+
+## Security
+
+- JWT Bearer Authentication with role-based policies  
+- HTTPS redirection (enabled in production)  
+- CORS policy with explicit allowed origins  
+
+## Requirements
+
+- .NET 8 SDK  
+- SQL Server (for database provider)  
+- Postman (for testing)  
+
