@@ -92,7 +92,6 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    builder.Logging.AddFilter("Microsoft.AspNetCore.Authentication", LogLevel.Debug);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -103,7 +102,9 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
+// Note: HTTPS is enabled. For local testing without trusting dev cert, use HTTP.
 app.UseHttpsRedirection();
+
 app.UseCors("AllowedOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
