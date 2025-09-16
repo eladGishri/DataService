@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataService.Models.Enums
 {
@@ -10,16 +14,16 @@ namespace DataService.Models.Enums
         /// <summary>
         /// Indicates that data is stored in a temporary cache.
         /// </summary>
-        Cache,
+       Cache,
 
         /// <summary>
         /// Indicates that data is stored in a file system.
         /// </summary>
-        File,
+       File,
 
         /// <summary>
         /// Indicates that data is stored in a database.
         /// </summary>
-        Database
+       Database
     }
 }

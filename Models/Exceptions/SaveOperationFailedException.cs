@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Models.Exceptions
 {
@@ -13,6 +17,7 @@ namespace Models.Exceptions
         /// <param name="message">The message that describes the error.</param>
         public SaveOperationFailedException(string message) : base(message)
         {
+
         }
     }
 }

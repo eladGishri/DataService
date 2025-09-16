@@ -1,12 +1,17 @@
-﻿using DataService.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DataService.Models.Entities;
 
 namespace Infrastructure.StorageProviders.Repositories
 {
     /// <summary>
     /// Defines the contract for a data repository that handles persistence operations for <see cref="DataEntity"/>.
     /// </summary>
-    public interface IDataRepository
-    {
+public interface IDataRepository
+{
         // Future functionality expansion
 
         /// <summary>

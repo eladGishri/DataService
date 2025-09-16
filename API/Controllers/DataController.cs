@@ -10,20 +10,20 @@ namespace DataService.Api.Controllers
     /// RESTful API controller for managing data entities in the multi-tier storage system.
     /// Provides endpoints for creating, reading, and updating data with role-based authorization.
     /// </summary>
-    [ApiController]
-    [Route("data")]
-    public class DataController : ControllerBase
-    {
-        private readonly IDataService _dataService;
+[ApiController]
+[Route("data")]
+public class DataController : ControllerBase
+{
+    private readonly IDataService _dataService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataController"/> class.
         /// </summary>
         /// <param name="dataService">The data service instance used for business logic operations.</param>
-        public DataController(IDataService dataService)
-        {
-            _dataService = dataService;
-        }
+    public DataController(IDataService dataService)
+    {
+        _dataService = dataService;
+    }
 
         /// <summary>
         /// Retrieves a data entity by its unique identifier.
@@ -41,21 +41,21 @@ namespace DataService.Api.Controllers
         /// <response code="401">Authentication is required</response>
         /// <response code="403">User lacks required permissions (User or Admin role required)</response>
         /// <response code="404">The data entity was not found</response>
-        [HttpGet("{id}")]
-        [Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> GetData(string id)
+    [HttpGet("{id}")]
+    [Authorize(Roles = "User,Admin")]
+    public async Task<IActionResult> GetData(string id)
+    {
+        if (string.IsNullOrEmpty(id))
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return BadRequest("ID cannot be null or empty.");
-            }
-
-            var item = await _dataService.GetByIdAsync(id);
-            if (item == null)
-                return NotFound();
-
-            return Ok(item);
+            return BadRequest("ID cannot be null or empty.");
         }
+
+        var item = await _dataService.GetByIdAsync(id);
+        if (item == null)
+            return NotFound();
+
+        return Ok(item);
+    }
 
         /// <summary>
         /// Creates a new data entity in all storage providers.
@@ -73,18 +73,19 @@ namespace DataService.Api.Controllers
         /// <response code="401">Authentication is required</response>
         /// <response code="403">User lacks required permissions (Admin role required)</response>
         /// <response code="500">An error occurred during the save operation</response>
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> InsertData([FromBody] string data)
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> InsertData([FromBody] string data)
+    {
+        if (string.IsNullOrEmpty(data))
         {
-            if (string.IsNullOrEmpty(data))
-            {
-                return BadRequest("Data cannot be null or empty.");
-            }
-
-            var id = await _dataService.SaveAsync(data);
-            return Created(string.Empty, id);
+            return BadRequest("Data cannot be null or empty.");
         }
+
+        var id = await _dataService.SaveAsync(data);
+
+        return Created(string.Empty, id);
+    }
 
         /// <summary>
         /// Updates an existing data entity across all storage providers.
@@ -105,26 +106,26 @@ namespace DataService.Api.Controllers
         /// <response code="403">User lacks required permissions (Admin role required)</response>
         /// <response code="404">The data entity was not found (handled by service layer)</response>
         /// <response code="500">An error occurred during the update operation</response>
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateData(string id, [FromBody] string data)
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateData(string id, [FromBody] string data)
+    {
+        if (string.IsNullOrEmpty(id))
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return BadRequest("ID cannot be null or empty.");
-            }
-
-            if (string.IsNullOrEmpty(data))
-            {
-                return BadRequest("Data cannot be null or empty.");
-            }
-
-            if (string.IsNullOrEmpty(await _dataService.UpdateAsync(id, data)))
-            {
-                return StatusCode(500, "An unexpected error occurred.");
-            }
-
-            return NoContent();
+            return BadRequest("ID cannot be null or empty.");
         }
+
+        if (string.IsNullOrEmpty(data))
+        {
+            return BadRequest("Data cannot be null or empty.");
+        }
+
+        if (string.IsNullOrEmpty(await _dataService.UpdateAsync(id, data)))
+        {
+            return StatusCode(500, "An unexpected error occurred.");
+        }
+
+        return NoContent();
     }
+}
 }

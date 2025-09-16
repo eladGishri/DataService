@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataService.Models.Exceptions
 {
@@ -13,6 +17,7 @@ namespace DataService.Models.Exceptions
         /// <param name="message">The message that describes the error.</param>
         public NotFoundException(string message) : base(message)
         {
+            
         }
     }
 }

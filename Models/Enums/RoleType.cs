@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataService.Models.Enums
 {
@@ -10,7 +14,7 @@ namespace DataService.Models.Enums
         /// <summary>
         /// Represents a user with administrative privileges.
         /// </summary>
-        Admin,
+        Admin, 
 
         /// <summary>
         /// Represents a standard user with limited access.
