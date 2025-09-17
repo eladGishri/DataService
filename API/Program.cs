@@ -1,6 +1,7 @@
 using DataService.Application.Mapping;
 using DataService.Application.Services;
 using DataService.Infrastructure;
+using DataService.Infrastructure.Factories;
 using DataService.Infrastructure.StorageProviders;
 using Infrastructure.StorageProviders.Caching;
 using Infrastructure.StorageProviders.FileStorage;
@@ -12,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-/// <summary>
+/// <summary> 
 /// Entry point for the DataService Web API application.
 /// Configures multi-tier storage, JWT authentication, authorization policies, CORS, and Swagger documentation.
 /// </summary>
@@ -33,8 +34,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 /// - FileStorageProvider as Singleton for file-based storage
 /// - DatabaseStorageProvider as Scoped for database operations
 /// </summary>
-builder.Services.AddSingleton<IStorageProvider, CacheStorageProvider>();
-builder.Services.AddSingleton<IStorageProvider, FileStorageProvider>();
+builder.Services.AddScoped<IStorageProvider, CacheStorageProvider>();
+builder.Services.AddScoped<IStorageProvider, FileStorageProvider>();
 builder.Services.AddScoped<IStorageProvider, DatabaseStorageProvider>();
 
 // Service Registration
